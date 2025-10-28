@@ -15,6 +15,9 @@ struct Arguments {
     #[arg(short)]
     c: bool,
 
+    #[arg(short)]
+    l: bool,
+
     files: Vec<String>,
 }
 
@@ -24,21 +27,31 @@ fn main() -> std::io::Result<()> {
     if let Some(first) = args.files.first() {
         let file = File::open(first)?;
         let reader = BufReader::new(file);
-        let mut count = 0;
+        let mut byte_count = 0;
+        let mut line_count = 0;
 
         for line in reader.lines() {
-            count += line?.len()
+            byte_count += line?.len();
+            line_count += 1;
         }
 
-        let max_digits = max_digits(count);
-        let s = format!("{:>width$}", count, width = max_digits as usize);
+        let max_digits = max_digits(byte_count, line_count);
+        let byte_count_str = format!("{:>width$}", byte_count, width = max_digits as usize);
+        let line_count_str = format!("{:>width$}", line_count, width = max_digits as usize);
 
-        let _ = writeln!(std::io::stdout(), "{} {}", s, first);
+        if args.l {
+            let _ = write!(std::io::stdout(), "{} ", line_count_str);
+        }
+        if args.c {
+            let _ = write!(std::io::stdout(), "{} ", byte_count_str);
+        }
+
+        let _ = writeln!(std::io::stdout(), "{}", first);
     }
     Ok(())
 }
 
-fn max_digits(byte_count: usize) -> usize {
+fn max_digits(byte_count: usize, line_count: usize) -> usize {
     let mut max_len = 0;
 
     let len_bytes = byte_count.to_string().len();
@@ -46,8 +59,13 @@ fn max_digits(byte_count: usize) -> usize {
         max_len = len_bytes;
     }
 
+    let len_lines = line_count.to_string().len();
+    if len_lines > max_len {
+        max_len = len_lines;
+    }
+
     if max_len < 7 {
         max_len = 7;
     }
-    return max_len + 1;
+    max_len + 1
 }

@@ -13,7 +13,14 @@ curl -L "https://www.dropbox.com/scl/fi/d4zs6aoq6hr3oew2b6a9v/test.txt?rlkey=20c
 Number of bytes in the file.
 ```bash
 cargo run -- -c test.txt
-    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.01s
      Running `target/debug/rswc -c test.txt`
   327900 test.txt
+```
+
+## Step 2
+Number of lines in a file.
+```bash
+cargo run -- -l test.txt   
+     Running `target/debug/rswc -l test.txt`
+    7145 test.txt
 ```
