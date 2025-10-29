@@ -23,6 +23,10 @@ struct Arguments {
     #[arg(short)]
     l: bool,
 
+    /// Count characters.  Count the number of characters in the file.
+    #[arg(short)]
+    m: bool,
+
     files: Vec<String>,
 }
 
@@ -31,22 +35,30 @@ fn main() -> std::io::Result<()> {
 
     if let Some(first) = args.files.first() {
         let file = File::open(first)?;
-        let reader = BufReader::new(file);
+        let mut reader = BufReader::new(file);
         let mut byte_count = 0;
         let mut line_count = 0;
         let mut word_count = 0;
+        let mut char_count = 0;
 
-        for line in reader.lines() {
-            let l = line?;
-            byte_count += l.len();
+        let mut buf = String::new();
+        loop {
+            buf.clear();
+            let n = reader.read_line(&mut buf)?; // n is bytes read; includes '\n' if present
+            if n == 0 { break; }
+
+            byte_count += n; // bytes, including newline
             line_count += 1;
-            word_count += l.split_whitespace().count();
+            word_count += buf.split_whitespace().count();
+            char_count += buf.chars().count(); // includes newline as one character
         }
 
-        let max_digits = max_digits(byte_count, line_count, word_count);
+
+        let max_digits = max_digits(byte_count, char_count, line_count, word_count);
         let byte_count_str = format!("{:>width$}", byte_count, width = max_digits as usize);
         let line_count_str = format!("{:>width$}", line_count, width = max_digits as usize);
         let word_count_str = format!("{:>width$}", word_count, width = max_digits as usize);
+        let char_count_str = format!("{:>width$}", char_count, width = max_digits as usize);
 
         if args.l {
             let _ = write!(std::io::stdout(), "{} ", line_count_str);
@@ -57,18 +69,26 @@ fn main() -> std::io::Result<()> {
         if args.c {
             let _ = write!(std::io::stdout(), "{} ", byte_count_str);
         }
+        if args.m {
+            let _ = write!(std::io::stdout(), "{} ", char_count_str);
+        }
 
         let _ = writeln!(std::io::stdout(), "{}", first);
     }
     Ok(())
 }
 
-fn max_digits(byte_count: usize, line_count: usize, word_count: usize) -> usize {
+fn max_digits(byte_count: usize, char_count: usize, line_count: usize, word_count: usize) -> usize {
     let mut max_len = 0;
 
     let len_bytes = byte_count.to_string().len();
     if len_bytes > max_len {
         max_len = len_bytes;
+    }
+
+    let len_chars = char_count.to_string().len();
+    if len_chars > max_len {
+        max_len = len_chars;
     }
 
     let len_lines = line_count.to_string().len();

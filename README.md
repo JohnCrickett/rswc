@@ -33,3 +33,11 @@ cargo run -- -w test.txt
    58164 test.txt
 ```
 
+## Step 4
+Number of characters in a file.
+```bash
+cargo run -- -m test.txt
+     Running `target/debug/rswc -m test.txt`
+  339292 test.txt
+```
+
