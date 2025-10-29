@@ -33,6 +33,14 @@ struct Arguments {
 fn main() -> std::io::Result<()> {
     let args = Arguments::parse();
 
+    let none = !(args.l || args.w || args.c || args.m);
+
+    let show_l = args.l || none;
+    let show_w = args.w || none;
+    let show_c = args.c || none;
+    let show_m = args.m;
+
+
     if let Some(first) = args.files.first() {
         let file = File::open(first)?;
         let mut reader = BufReader::new(file);
@@ -60,16 +68,16 @@ fn main() -> std::io::Result<()> {
         let word_count_str = format!("{:>width$}", word_count, width = max_digits as usize);
         let char_count_str = format!("{:>width$}", char_count, width = max_digits as usize);
 
-        if args.l {
+        if show_l {
             let _ = write!(std::io::stdout(), "{} ", line_count_str);
         }
-        if args.w {
+        if show_w {
             let _ = write!(std::io::stdout(), "{} ", word_count_str);
         }
-        if args.c {
+        if show_c {
             let _ = write!(std::io::stdout(), "{} ", byte_count_str);
         }
-        if args.m {
+        if show_m {
             let _ = write!(std::io::stdout(), "{} ", char_count_str);
         }
 

@@ -14,7 +14,7 @@ Number of bytes in the file.
 ```bash
 cargo run -- -c test.txt
      Running `target/debug/rswc -c test.txt`
-  327900 test.txt
+  342190 test.txt
 ```
 
 ## Step 2
@@ -41,3 +41,10 @@ cargo run -- -m test.txt
   339292 test.txt
 ```
 
+## Step 5
+The default option - i.e. no options are provided, which is the equivalent to the -c, -l and -w options.
+```bash
+cargo run -- test.txt
+     Running `target/debug/rswc test.txt`
+    7145    58164   342190 test.txt
+```
