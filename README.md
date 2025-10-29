@@ -48,3 +48,11 @@ cargo run -- test.txt
      Running `target/debug/rswc test.txt`
     7145    58164   342190 test.txt
 ```
+
+## Step 6
+Read from standard input if no filename is specified.
+```bash
+cat test.txt | cargo run -- -l
+     Running `target/debug/rswc -l`
+    7145
+```
