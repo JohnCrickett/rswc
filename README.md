@@ -24,3 +24,12 @@ cargo run -- -l test.txt
      Running `target/debug/rswc -l test.txt`
     7145 test.txt
 ```
+
+## Step 3
+Number of words in a file.
+```bash
+cargo run -- -w test.txt
+     Running `target/debug/rswc -w test.txt`
+   58164 test.txt
+```
+
