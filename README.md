@@ -45,7 +45,6 @@ cargo run -- -m test.txt
 The default option - i.e. no options are provided, which is the equivalent to the -c, -l and -w options.
 ```bash
 cargo run -- test.txt
-     Running `target/debug/rswc test.txt`
     7145    58164   342190 test.txt
 ```
 
@@ -55,4 +54,13 @@ Read from standard input if no filename is specified.
 cat test.txt | cargo run -- -l
      Running `target/debug/rswc -l`
     7145
+```
+
+### Testing on Big Files (Over 100 GB)
+```bash
+seq 1 300000 | xargs -Inone cat test.txt | wc
+ 2143500000 17449200000 102657000000
+seq 1 300000 | xargs -Inone cat test.txt | cargo run -r
+     Running `target/release/rswc`
+   2143500000   17449200000  102657000000
 ```
